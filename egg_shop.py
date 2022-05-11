@@ -52,6 +52,22 @@ def enter_quantity(input_message: str = None) -> int:
             print("    Please enter an integer. \n")
 
 
+def enter_carton() -> int:
+    """Asks the user for the size of the carton they would like, and checks
+    if it is valid. Returns the valid carton size as an int. """
+    while True:
+        try:
+            carton_sizes = [6, 12, 24]
+            carton = int(input("    Enter carton/tray of 6, 12 or 24: "))
+
+            if carton in carton_sizes:
+                return carton
+            else:
+                print("    Please enter a valid carton size. \n")
+        except ValueError:
+            print("    Please enter an integer. ")
+
+
 def print_menu():
     """Will print the main menu and menu items when called. """
     print_line()
@@ -137,6 +153,70 @@ def list_stock():
     print()
 
 
+def sell_stock():
+    """Sells eggs in cartons of 6, 12 and 24 to the customer. """
+    print("\n    " + "-" * 17)
+    print("      💰 SELL EGGS")
+    print("   " + "-" * 17)
+
+    order = []
+
+    while True:
+        # Asks for the size of the egg, and gets the quantity from stock. If
+        # the quantity is smaller than 6 (the smallest carton size), tell that
+        # to the user. Otherwise, print the available egg cartons, and ask the
+        # user which size carton they would like.
+
+        size = enter_size()
+        quantity = stock[size]
+
+        if quantity < 6:
+            print(f"    There are no size {size} eggs in stock. \n")
+        else:
+            carton_sizes = [6, 12, 24]
+            print("    You can choose from either: ")
+
+            carton_quantity = []
+            for i in carton_sizes:
+                carton_quantity.append(int(quantity / i))
+                print(f"        - {int(quantity / i)}x cartons of {i}")
+
+            carton_size = enter_carton()
+            index = carton_sizes.index(carton_size)
+
+            # TODO CHeck that this input is valid
+            carton_number = int(input("    Enter quantity of cartons/trays: "))
+
+            if carton_number > carton_quantity[index]:
+                print("    Invalid quantity. Did not modify order. ")
+            else:
+                # Calculate the price by multiplying the discount, carton
+                # number and the carton size together.
+
+                carton_sizes_and_discounts = [[6, 12, 24], [0.95, 0.9, 0.8]]
+                discount_index = carton_sizes_and_discounts[0].index(
+                    carton_size)
+
+                egg_prices = [[4, 5, 6, 7, 8], [0.22, 0.26, 0.32, 0.4, 0.44]]
+                size_index = egg_prices[0].index(size)
+
+                print(discount_index, size_index)
+                price = carton_size * carton_number * \
+                    carton_sizes_and_discounts[1][discount_index] * egg_prices[1][size_index]
+                print(price)
+
+                # Append the users order to the list of order in a dictionary
+                # with the format {size: 4, carton_size: 6, carton_number: 2,
+                # price: 4.5}
+
+                order.append({"size": size, "carton_size": carton_size,
+                              "carton_number": carton_number})
+
+            # Print the current order.
+            print("    - Order:")
+            print("        - ")
+
+
 def main():
     """This function will ask the user for their choice and check that it's
     valid. It will then call the other functions that the user asked for. """
@@ -155,7 +235,8 @@ def main():
             valid_answer = is_valid_choice(user_choice)
 
         menu_choices = [["a", "e", "l", "s", "r", "q"],
-                        [add_stock, edit_stock, list_stock]]
+                        [add_stock, edit_stock, list_stock,
+                         sell_stock]]
 
         # The index of the letters and the function names in the menu_choices
         # list. Find the index of the letter that the user entered, and use
