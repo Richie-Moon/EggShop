@@ -58,7 +58,7 @@ def enter_carton() -> int:
     while True:
         try:
             carton_sizes = [6, 12, 24]
-            carton = int(input("    Enter carton/tray of 6, 12 or 24: "))
+            carton = int(input("    > Enter carton/tray of 6, 12 or 24: "))
 
             if carton in carton_sizes:
                 return carton
@@ -184,14 +184,22 @@ def sell_stock():
             carton_size = enter_carton()
             index = carton_sizes.index(carton_size)
 
-            # TODO CHeck that this input is valid
-            carton_number = int(input("    Enter quantity of cartons/trays: "))
+            while True:
+                try:
+                    carton_number = int(input("    > Enter quantity of "
+                                              "cartons/trays: "))
+                    if carton_number <= 0:
+                        print("Please enter a valid number. ")
+                    else:
+                        break
+                except ValueError:
+                    print("Please enter an integer. ")
 
             if carton_number > carton_quantity[index]:
-                print("    Invalid quantity. Did not modify order. ")
+                print("\n    ⛔ INVALID QUANTITY! DID NOT MODIFY ORDER! ")
             else:
                 # Calculate the price by multiplying the discount, carton
-                # number and the carton size together.
+                # number and the carton size together. Round to 2dp.
 
                 carton_sizes_and_discounts = [[6, 12, 24], [0.95, 0.9, 0.8]]
                 discount_index = carton_sizes_and_discounts[0].index(
@@ -200,21 +208,44 @@ def sell_stock():
                 egg_prices = [[4, 5, 6, 7, 8], [0.22, 0.26, 0.32, 0.4, 0.44]]
                 size_index = egg_prices[0].index(size)
 
-                print(discount_index, size_index)
-                price = carton_size * carton_number * \
-                    carton_sizes_and_discounts[1][discount_index] * egg_prices[1][size_index]
-                print(price)
+                price = round(carton_size * carton_number *
+                              carton_sizes_and_discounts[1][discount_index] *
+                              egg_prices[1][size_index], 2)
 
                 # Append the users order to the list of order in a dictionary
                 # with the format {size: 4, carton_size: 6, carton_number: 2,
                 # price: 4.5}
 
                 order.append({"size": size, "carton_size": carton_size,
-                              "carton_number": carton_number})
+                              "carton_number": carton_number, "price": price})
 
-            # Print the current order.
-            print("    - Order:")
-            print("        - ")
+                # Remove the number to eggs sold from the stock.
+                eggs_sold = carton_number * carton_size
+                stock[size] -= eggs_sold
+
+            # Print the current order and the total price.
+            print("\n    - Order:")
+            total_price = 0
+            for item in order:
+                total_price += item['price']
+                print(f"        - {item['carton_number']}x cartons of "
+                      f"{item['carton_size']}, size {item['size']}: "
+                      f"${item['price']}")
+            print(f"        - TOTAL: ${total_price}\n")
+
+            # Ask the user if they want to order more eggs.
+            cont = 'yes'
+            while cont == 'yes':
+                cont = input("    > Add another carton/tray (yes/no): "
+                             ).lower().strip()
+                if cont == 'yes' or cont == 'no':
+                    break
+                else:
+                    print("Please enter 'yes' or 'no'. ")
+            if cont == 'yes':
+                pass
+            elif cont == 'no':
+                break
 
 
 def main():
