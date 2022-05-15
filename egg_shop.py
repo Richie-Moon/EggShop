@@ -10,7 +10,7 @@ stock = {4: 80,
          6: 0,
          7: 0,
          8: 0}
-
+all_orders = []
 
 def print_line():
     """Prints 17 = signs. """
@@ -189,11 +189,11 @@ def sell_stock():
                     carton_number = int(input("    > Enter quantity of "
                                               "cartons/trays: "))
                     if carton_number <= 0:
-                        print("Please enter a valid number. ")
+                        print("    Please enter a valid number. \n")
                     else:
                         break
                 except ValueError:
-                    print("Please enter an integer. ")
+                    print("    Please enter an integer. \n")
 
             if carton_number > carton_quantity[index]:
                 print("\n    ⛔ INVALID QUANTITY! DID NOT MODIFY ORDER! ")
@@ -233,19 +233,32 @@ def sell_stock():
                       f"${item['price']}")
             print(f"        - TOTAL: ${total_price}\n")
 
-            # Ask the user if they want to order more eggs.
-            cont = 'yes'
-            while cont == 'yes':
+            # Ask the user if they want to order another carton of eggs.
+            while True:
                 cont = input("    > Add another carton/tray (yes/no): "
                              ).lower().strip()
                 if cont == 'yes' or cont == 'no':
                     break
                 else:
-                    print("Please enter 'yes' or 'no'. ")
+                    print("    Please enter 'yes' or 'no'. \n")
             if cont == 'yes':
                 pass
             elif cont == 'no':
                 break
+    all_orders.append(order)
+    print("-" * 17)
+    print(f"Sold for ${total_price}.\n ")
+
+
+def view_receipts():
+    print("    " + "-" * 17)
+    print("       🧾 RECEIPTS")
+    print("    " + "-" * 17)
+    
+    # all_orders is in the format [[{}], [{}, {}]]
+    
+    for order in all_orders:
+        index = all_orders.index(order)
 
 
 def main():
@@ -267,7 +280,7 @@ def main():
 
         menu_choices = [["a", "e", "l", "s", "r", "q"],
                         [add_stock, edit_stock, list_stock,
-                         sell_stock]]
+                         sell_stock, view_receipts]]
 
         # The index of the letters and the function names in the menu_choices
         # list. Find the index of the letter that the user entered, and use
