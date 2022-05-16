@@ -12,6 +12,7 @@ stock = {4: 80,
          8: 0}
 all_orders = []
 
+
 def print_line():
     """Prints 17 = signs. """
     print("=" * 17)
@@ -106,7 +107,7 @@ def add_stock():
     size = enter_size()
     quantity = enter_quantity()
 
-    # Adds the quantity provided by the user to the quantity in the stocks
+    # Adds the quantity provided by the user to the quantity in the stock
     # dictionary.
     stock[size] += quantity
     print("    " + "-" * 17)
@@ -145,8 +146,9 @@ def list_stock():
     cartons = [6, 12, 24]
     for size in stock:
         print(f"    Size {size}: {stock[size]}x")
+        tray = 24
         for i in cartons:
-            if i == 24:
+            if i == tray:
                 print(f"        - Trays of {i}: {int(stock[size] / i)}x")
             else:
                 print(f"        - Cartons of {i}: {int(stock[size] / i)}x")
@@ -219,7 +221,7 @@ def sell_stock():
                 order.append({"size": size, "carton_size": carton_size,
                               "carton_number": carton_number, "price": price})
 
-                # Remove the number to eggs sold from the stock.
+                # Remove the number of eggs sold from the stock.
                 eggs_sold = carton_number * carton_size
                 stock[size] -= eggs_sold
 
@@ -241,6 +243,7 @@ def sell_stock():
                     break
                 else:
                     print("    Please enter 'yes' or 'no'. \n")
+
             if cont == 'yes':
                 pass
             elif cont == 'no':
@@ -251,14 +254,41 @@ def sell_stock():
 
 
 def view_receipts():
+    """Prints all the transactions to the user. Lists the order, carton size,
+    number of cartons, egg size, and price. Prints total price for the order at
+    the end. """
     print("    " + "-" * 17)
     print("       🧾 RECEIPTS")
     print("    " + "-" * 17)
-    
-    # all_orders is in the format [[{}], [{}, {}]]
-    
+
+    # all_orders is in the format [[{}, {}], [{}, {}]]
+
     for order in all_orders:
         index = all_orders.index(order)
+        total_price = 0
+
+        print(f"    Order {index + 1}: ")
+        tray = 24
+        
+        for sub_order in order:
+            if sub_order['carton_size'] == tray:
+                print(f"        - {sub_order['carton_number']}x trays of "
+                      f"{sub_order['carton_size']}, size {sub_order['size']}: "
+                      f"${sub_order['price']}")
+            
+            else:
+                print(f"        - {sub_order['carton_number']}x cartons of "
+                      f"{sub_order['carton_size']}, size {sub_order['size']}: "
+                      f"${sub_order['price']}")
+
+            total_price += sub_order['price']
+        print(f"        - TOTAL: {round(total_price, 2)} \n")
+
+
+def quit_program():
+    """Quits the program. """
+    print("Thank you for using Eggshop. ")
+    quit()
 
 
 def main():
@@ -280,7 +310,7 @@ def main():
 
         menu_choices = [["a", "e", "l", "s", "r", "q"],
                         [add_stock, edit_stock, list_stock,
-                         sell_stock, view_receipts]]
+                         sell_stock, view_receipts, quit_program]]
 
         # The index of the letters and the function names in the menu_choices
         # list. Find the index of the letter that the user entered, and use
