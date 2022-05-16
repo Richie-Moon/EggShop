@@ -10,6 +10,7 @@ stock = {4: 80,
          6: 0,
          7: 0,
          8: 0}
+
 all_orders = []
 
 
@@ -58,10 +59,10 @@ def enter_carton() -> int:
     if it is valid. Returns the valid carton size as an int. """
     while True:
         try:
-            carton_sizes = [6, 12, 24]
+            CARTON_SIZES = [6, 12, 24]
             carton = int(input("    > Enter carton/tray of 6, 12 or 24: "))
 
-            if carton in carton_sizes:
+            if carton in CARTON_SIZES:
                 return carton
             else:
                 print("    Please enter a valid carton size. \n")
@@ -74,13 +75,13 @@ def print_menu():
     print_line()
     print("   🥚 EGGSHOP")
     print_line()
-    menu_items = {"A": "Add Eggs to Stock.",
+    MENU_ITEMS = {"A": "Add Eggs to Stock.",
                   "E": "Edit egg stock and possible combinations. ",
                   "L": "List stock. ",
                   "S": "Sell Eggs. ",
                   "R": "View receipts. ",
                   "Q": "Quit. "}
-    for key, value in menu_items.items():
+    for key, value in MENU_ITEMS.items():
         print(f"{key}: {value}")
     print_line()
 
@@ -89,8 +90,8 @@ def is_valid_choice(choice: str) -> bool:
     """Takes an input 'choice' and checks if it in the list of valid_choices.
     Return True if it is, False if it isn't. """
 
-    valid_choices = ["a", "e", "l", "s", "r", "q"]
-    if choice in valid_choices:
+    VALID_CHOICES = ["a", "e", "l", "s", "r", "q"]
+    if choice in VALID_CHOICES:
         return True
     else:
         return False
@@ -143,12 +144,12 @@ def list_stock():
     # that size. Then, for every carton/tray size, check if it is 24. If it is,
     # print Trays of 24, and then how many we can make. Do the same with 6 and
     # 12 except print 'Cartons' instead of 'Trays'.
-    cartons = [6, 12, 24]
+    CARTONS = [6, 12, 24]
     for size in stock:
         print(f"    Size {size}: {stock[size]}x")
-        tray = 24
-        for i in cartons:
-            if i == tray:
+        TRAY = 24
+        for i in CARTONS:
+            if i == TRAY:
                 print(f"        - Trays of {i}: {int(stock[size] / i)}x")
             else:
                 print(f"        - Cartons of {i}: {int(stock[size] / i)}x")
@@ -175,22 +176,23 @@ def sell_stock():
         if quantity < 6:
             print(f"    There are no size {size} eggs in stock. \n")
         else:
-            carton_sizes = [6, 12, 24]
+            CARTON_SIZES = [6, 12, 24]
             print("    You can choose from either: ")
 
             carton_quantity = []
-            for i in carton_sizes:
+            for i in CARTON_SIZES:
                 carton_quantity.append(int(quantity / i))
                 print(f"        - {int(quantity / i)}x cartons of {i}")
 
             carton_size = enter_carton()
-            index = carton_sizes.index(carton_size)
+            index = CARTON_SIZES.index(carton_size)
 
             while True:
                 try:
+                    MINIMUM = 0
                     carton_number = int(input("    > Enter quantity of "
                                               "cartons/trays: "))
-                    if carton_number <= 0:
+                    if carton_number <= MINIMUM:
                         print("    Please enter a valid number. \n")
                     else:
                         break
@@ -203,16 +205,16 @@ def sell_stock():
                 # Calculate the price by multiplying the discount, carton
                 # number and the carton size together. Round to 2dp.
 
-                carton_sizes_and_discounts = [[6, 12, 24], [0.95, 0.9, 0.8]]
-                discount_index = carton_sizes_and_discounts[0].index(
+                CARTON_SIZES_AND_DISCOUNTS = [[6, 12, 24], [0.95, 0.9, 0.8]]
+                discount_index = CARTON_SIZES_AND_DISCOUNTS[0].index(
                     carton_size)
 
-                egg_prices = [[4, 5, 6, 7, 8], [0.22, 0.26, 0.32, 0.4, 0.44]]
-                size_index = egg_prices[0].index(size)
+                EGG_PRICES = [[4, 5, 6, 7, 8], [0.22, 0.26, 0.32, 0.4, 0.44]]
+                size_index = EGG_PRICES[0].index(size)
 
                 price = round(carton_size * carton_number *
-                              carton_sizes_and_discounts[1][discount_index] *
-                              egg_prices[1][size_index], 2)
+                              CARTON_SIZES_AND_DISCOUNTS[1][discount_index] *
+                              EGG_PRICES[1][size_index], 2)
 
                 # Append the users order to the list of order in a dictionary
                 # with the format {size: 4, carton_size: 6, carton_number: 2,
@@ -268,14 +270,14 @@ def view_receipts():
         total_price = 0
 
         print(f"    Order {index + 1}: ")
-        tray = 24
-        
+        TRAY = 24
+
         for sub_order in order:
-            if sub_order['carton_size'] == tray:
+            if sub_order['carton_size'] == TRAY:
                 print(f"        - {sub_order['carton_number']}x trays of "
                       f"{sub_order['carton_size']}, size {sub_order['size']}: "
                       f"${sub_order['price']}")
-            
+
             else:
                 print(f"        - {sub_order['carton_number']}x cartons of "
                       f"{sub_order['carton_size']}, size {sub_order['size']}: "
