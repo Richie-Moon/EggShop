@@ -5,7 +5,7 @@
 # different size cartons and selling eggs to customers.
 
 # The list of stock. They are in the format {size: quantity}.
-stock = {4: 80,
+stock = {4: 6,
          5: 0,
          6: 0,
          7: 0,
@@ -97,6 +97,21 @@ def is_valid_choice(choice: str) -> bool:
         return False
 
 
+def check_stock():
+    """Will return False if all the egg stock is below 6. If at least 1 of the
+    egg sizes have more than 6, return True. """
+
+    # Found the application for the all() method on
+    """https://www.geeksforgeeks.org/python-all-function/#:~:text=The%20all()
+    %20function%20is,the%20iterable%20object%20is%20empty."""
+    # Adjusted to use in context for this project.
+    list_of_stock = list(stock.values())
+    if all(quantity < 6 for quantity in list_of_stock) is True:
+        return False
+    else:
+        return True
+
+
 def add_stock():
     """Will ask the user for the size and quantity to increase stock by."""
     print("\n    " + "-" * 17)
@@ -165,6 +180,16 @@ def sell_stock():
     order = []
 
     while True:
+        # Loops through each quantity for each egg size. If they are all less
+        # than 6, that means we have no stock to sell. Tell the user that there
+        # is no stock, and end the function.
+        have_stock = check_stock()
+        if have_stock is False:
+            print("    There is no stock available currently. \n")
+            break
+        else:
+            pass
+
         # Asks for the size of the egg, and gets the quantity from stock. If
         # the quantity is smaller than 6 (the smallest carton size), tell that
         # to the user. Otherwise, print the available egg cartons, and ask the
@@ -232,6 +257,7 @@ def sell_stock():
             total_price = 0
             for item in order:
                 total_price += item['price']
+                total_price = round(total_price, 2)
                 print(f"        - {item['carton_number']}x cartons of "
                       f"{item['carton_size']}, size {item['size']}: "
                       f"${item['price']}")
@@ -239,20 +265,26 @@ def sell_stock():
 
             # Ask the user if they want to order another carton of eggs.
             while True:
-                cont = input("    > Add another carton/tray (yes/no): "
-                             ).lower().strip()
-                if cont == 'yes' or cont == 'no':
-                    break
+                have_stock = check_stock()
+                if have_stock is True:
+                    cont = input("    > Add another carton/tray (yes/no): "
+                                 ).lower().strip()
+                    if cont == 'yes' or cont == 'no':
+                        break
+                    else:
+                        print("    Please enter 'yes' or 'no'. \n")
                 else:
-                    print("    Please enter 'yes' or 'no'. \n")
+                    print("    No more stock is available. ")
+                    cont = 'no'
+                    break
 
             if cont == 'yes':
                 pass
             elif cont == 'no':
+                all_orders.append(order)
+                print("-" * 17)
+                print(f"Sold for ${total_price}.\n ")
                 break
-    all_orders.append(order)
-    print("-" * 17)
-    print(f"Sold for ${total_price}.\n ")
 
 
 def view_receipts():
