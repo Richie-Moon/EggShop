@@ -5,11 +5,11 @@
 # different size cartons and selling eggs to customers.
 
 # The list of stock. They are in the format {size: quantity}.
-stock = {4: 6,
-         5: 0,
-         6: 0,
-         7: 0,
-         8: 0}
+stock = {4: 100,
+         5: 100,
+         6: 120,
+         7: 120,
+         8: 110}
 
 all_orders = []
 
@@ -163,11 +163,13 @@ def list_stock():
     for size in stock:
         print(f"    Size {size}: {stock[size]}x")
         TRAY = 24
-        for i in CARTONS:
-            if i == TRAY:
-                print(f"        - Trays of {i}: {int(stock[size] / i)}x")
+        for carton in CARTONS:
+            if carton == TRAY:
+                print(f"        - Trays of {carton}: "
+                      f"{int(stock[size] / carton)}x")
             else:
-                print(f"        - Cartons of {i}: {int(stock[size] / i)}x")
+                print(f"        - Cartons of {carton}:"
+                      f" {int(stock[size] / carton)}x")
     print()
 
 
@@ -296,27 +298,31 @@ def view_receipts():
     print("    " + "-" * 17)
 
     # all_orders is in the format [[{}, {}], [{}, {}]]
+    # Check if there are no orders in all_orders. If there is 0, Tell the user
+    # that there are no receipts to show.
+    if len(all_orders) == 0:
+        print("    No receipts to show.\n ")
+    else:
+        for order in all_orders:
+            index = all_orders.index(order)
+            total_price = 0
 
-    for order in all_orders:
-        index = all_orders.index(order)
-        total_price = 0
+            print(f"    Order {index + 1}: ")
+            TRAY = 24
 
-        print(f"    Order {index + 1}: ")
-        TRAY = 24
+            for sub_order in order:
+                if sub_order['carton_size'] == TRAY:
+                    print(f"        - {sub_order['carton_number']}x trays of "
+                          f"{sub_order['carton_size']}, size "
+                          f"{sub_order['size']}: ${sub_order['price']}")
 
-        for sub_order in order:
-            if sub_order['carton_size'] == TRAY:
-                print(f"        - {sub_order['carton_number']}x trays of "
-                      f"{sub_order['carton_size']}, size {sub_order['size']}: "
-                      f"${sub_order['price']}")
+                else:
+                    print(f"        - {sub_order['carton_number']}x cartons "
+                          f"of {sub_order['carton_size']}, size "
+                          f"{sub_order['size']}: ${sub_order['price']}")
 
-            else:
-                print(f"        - {sub_order['carton_number']}x cartons of "
-                      f"{sub_order['carton_size']}, size {sub_order['size']}: "
-                      f"${sub_order['price']}")
-
-            total_price += sub_order['price']
-        print(f"        - TOTAL: {round(total_price, 2)} \n")
+                total_price += sub_order['price']
+            print(f"        - TOTAL: {round(total_price, 2)} \n")
 
 
 def quit_program():
