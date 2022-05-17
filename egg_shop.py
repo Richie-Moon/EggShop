@@ -5,11 +5,11 @@
 # different size cartons and selling eggs to customers.
 
 # The list of stock. They are in the format {size: quantity}.
-stock = {4: 100,
-         5: 100,
-         6: 120,
-         7: 120,
-         8: 110}
+stock = {4: 0,
+         5: 0,
+         6: 0,
+         7: 0,
+         8: 0}
 
 all_orders = []
 
