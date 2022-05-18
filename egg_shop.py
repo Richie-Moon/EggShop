@@ -5,7 +5,7 @@
 # different size cartons and selling eggs to customers.
 
 # The list of stock. They are in the format {size: quantity}.
-stock = {4: 0,
+stock = {4: 7,
          5: 0,
          6: 0,
          7: 0,
@@ -211,8 +211,14 @@ def sell_stock():
                 carton_quantity.append(int(quantity / i))
                 print(f"        - {int(quantity / i)}x cartons of {i}")
 
-            carton_size = enter_carton()
-            index = CARTON_SIZES.index(carton_size)
+            while True:
+                carton_size = enter_carton()
+                index = CARTON_SIZES.index(carton_size)
+
+                if quantity < carton_size:
+                    print("\n    ⛔ INVALID QUANTITY! DID NOT MODIFY ORDER! ")
+                else:
+                    break
 
             while True:
                 try:
