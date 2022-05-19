@@ -328,7 +328,7 @@ def view_receipts():
                           f"{sub_order['size']}: ${sub_order['price']}")
 
                 total_price += sub_order['price']
-            print(f"        - TOTAL: {round(total_price, 2)} \n")
+            print(f"        - TOTAL: ${round(total_price, 2)} \n")
 
 
 def quit_program():
